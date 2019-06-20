@@ -40,7 +40,7 @@ def topology():
 
         net.addLink( r1, s1 )
 
-        net.addLink( r1, s2 )
+        net.addLink( r2, s2 )
 
         net.addLink( r1, r2 )
 
@@ -64,27 +64,25 @@ def topology():
 
         r1.cmd("ifconfig r1-eth1 0")
 
-        r1.cmd("ifconfig r1-eth2 0")
-
         r1.cmd("ifconfig r1-eth0 hw ether 00:00:00:00:01:01")
 
-        r1.cmd("ifconfig r1-eth1 hw ether 00:00:00:00:01:02")
-
-        r1.cmd("ifconfig r1-eth2 hw ether 00:00:00:00:01:03")
+        r1.cmd("ifconfig r1-eth1 hw ether 00:00:00:00:01:03")
 
         r1.cmd("ip addr add 10.0.1.1/24 brd + dev r1-eth0")
 
-        r1.cmd("ip addr add 10.0.2.1/24 brd + dev r1-eth1")
-
-        r1.cmd("ip addr add 10.0.3.1/24 brd + dev r1-eth2")
+        r1.cmd("ip addr add 10.0.3.1/24 brd + dev r1-eth1")
 
         r1.cmd("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
         r2.cmd("ifconfig r2-eth0 0")
 
-        r2.cmd("ifconfig r2-eth0 hw ether 00:00:00:00:01:04")
+        r2.cmd("ifconfig r2-eth1 0")
+       
+        r2.cmd("ifconfig r2-eth0 hw ether 00:00:00:00:01:02")
+        r2.cmd("ifconfig r2-eth1 hw ether 00:00:00:00:01:04")
 
-        r2.cmd("ip addr add 10.0.3.2/24 brd + dev r2-eth0")
+        r2.cmd("ip addr add 10.0.2.1/24 brd + dev r2-eth0")
+        r2.cmd("ip addr add 10.0.3.2/24 brd + dev r2-eth1")
 
         r2.cmd("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
@@ -96,6 +94,10 @@ def topology():
         h3.cmd("ip route add default via 10.0.1.1")
 
         h4.cmd("ip route add default via 10.0.2.1")
+
+        r1.cmd("ip route add default via 10.0.3.2")
+
+        r2.cmd("ip route add default via 10.0.3.1")
 
         s1.cmd("ovs-ofctl add-flow s1 priority=1,arp,actions=flood")
 
