@@ -40,9 +40,9 @@ def topology():
 
         net.addLink( r1, s1 )
 
-        net.addLink( r2, s2 )
+        net.addLink( r1, s2 )
 
-        net.addLink( r1, r2)
+        net.addLink( r1, r2 )
 
         net.addLink( h1, s1 )
 
@@ -62,30 +62,30 @@ def topology():
 
         r1.cmd("ifconfig r1-eth0 0")
 
-        r2.cmd("ifconfig r2-eth0 0")
-
         r1.cmd("ifconfig r1-eth1 0")
 
-        r2.cmd("ifconfig r2-eth1 0")
+        r1.cmd("ifconfig r1-eth2 0")
 
         r1.cmd("ifconfig r1-eth0 hw ether 00:00:00:00:01:01")
 
-        r2.cmd("ifconfig r2-eth0 hw ether 00:00:00:00:01:02")
+        r1.cmd("ifconfig r1-eth1 hw ether 00:00:00:00:01:02")
 
-        r1.cmd("ifconfig r1-eth1 hw ether 00:00:00:00:02:01")
-
-        r2.cmd("ifconfig r2-eth1 hw ether 00:00:00:00:02:02")
+        r1.cmd("ifconfig r1-eth2 hw ether 00:00:00:00:01:03")
 
         r1.cmd("ip addr add 10.0.1.1/24 brd + dev r1-eth0")
 
-        r2.cmd("ip addr add 10.0.2.1/24 brd + dev r2-eth0")
+        r1.cmd("ip addr add 10.0.2.1/24 brd + dev r1-eth1")
 
-        r1.cmd("ip addr add 10.0.3.1/24 brd + dev r1-eth1")
-
-        r2.cmd("ip addr add 10.0.3.2/24 brd + dev r2-eth1")
+        r1.cmd("ip addr add 10.0.3.1/24 brd + dev r1-eth2")
 
         r1.cmd("echo 1 > /proc/sys/net/ipv4/ip_forward")
-        
+
+        r2.cmd("ifconfig r2-eth0 0")
+
+        r2.cmd("ifconfig r2-eth0 hw ether 00:00:00:00:01:04")
+
+        r2.cmd("ip addr add 10.0.3.2/24 brd + dev r2-eth0")
+
         r2.cmd("echo 1 > /proc/sys/net/ipv4/ip_forward")
 
 
