@@ -44,22 +44,18 @@ class MyTopo( Topo ):
         client3 = self.addHost( 'h3', ip='10.10.3.1/24', defaultRoute='via 10.10.3.2' )
         client4 = self.addHost( 'h4', ip='10.10.4.1/24', defaultRoute='via 10.10.4.2' )
 
-        server1 = self.addHost( 'h5', ip='10.10.6.2/24', defaultRoute='via 10.10.6.1' )
-        server2 = self.addHost( 'h6', ip='10.10.7.2/24', defaultRoute='via 10.10.7.1' )
-        server3 = self.addHost( 'h7', ip='10.10.8.2/24', defaultRoute='via 10.10.8.1' )
-        server4 = self.addHost( 'h8', ip='10.10.9.2/24', defaultRoute='via 10.10.9.1' )
+        server1 = self.addHost( 'server1', ip='10.10.6.2/24', defaultRoute='via 10.10.6.1' )
+        server2 = self.addHost( 'server2', ip='10.10.7.2/24', defaultRoute='via 10.10.7.1' )
+        server3 = self.addHost( 'server3', ip='10.10.8.2/24', defaultRoute='via 10.10.8.1' )
+        server4 = self.addHost( 'server4', ip='10.10.9.2/24', defaultRoute='via 10.10.9.1' )
 
 
         self.addLink(router1, router2, intfName1='r1-eth1', params1={'ip':defaultIP1},intfName2='r2-eth1', params2={'ip':defaultIP2})
-        #self.addLink(router1, s1, intfName2='r1-eth1' )        
-        #self.addLink(router2, s1, intfName2='r2-eth1' )
         self.addLink(client1, router1, intfName2='r1-eth2', params2={ 'ip': '10.10.1.2/24'} )
         self.addLink(client2, router1, intfName2='r1-eth5', params2={ 'ip': '10.10.2.2/24'} )
         self.addLink(client3, router1, intfName2='r1-eth3', params2={ 'ip': '10.10.3.2/24'} )
         self.addLink(client4, router1, intfName2='r1-eth4', params2={ 'ip': '10.10.4.2/24'} )
         
-        #self.addLink(router1, router2, intfName2='r1-eth3', params2={ 'ip': '10.10.5.2/24'} )
-        #self.addLink(router2, router1, intfName2='r2-eth4', params2={ 'ip': '10.10.5.1/24'} )
 
         self.addLink(server1, router2, intfName2='r2-eth5', params2={ 'ip': '10.10.6.1/24'} )
         self.addLink(server2, router2, intfName2='r2-eth2', params2={ 'ip': '10.10.7.1/24'} )
@@ -79,8 +75,8 @@ def perfTest():
     net.start()
 
     info( '*** Routing Table on Router:\n' )
-    rp_disable(r1)
-    rp_disable(net['r2'])
+    #rp_disable(r1)
+    #rp_disable(net['r2'])
     # net[ 'r1'].cmd('ip route add to 10.10.6.0/24 via 10.10.5.2')
     # net[ 'r1'].cmd('ip route add to 10.10.7.0/24 via 10.10.5.2')
     # net[ 'r1'].cmd('ip route add to 10.10.8.0/24 via 10.10.5.2')
