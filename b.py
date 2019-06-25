@@ -17,8 +17,7 @@ from time import sleep
 #bottleneck bandwith = 400 mbps
 #bottleneck buffer = 2Mbyte
 #RTT varia entre 16ms e 324ms
-#2 fluxos com mesmo RTT
-
+#2 fluxos com mesmo RTTclient1 = null
 class LinuxRouter( Node ):
     "A Node with IP forwarding enabled."
 
@@ -52,12 +51,7 @@ class MyTopo( Topo ):
         self.addLink(client2, router1, intfName2='r1-eth2', params2={ 'ip': '10.0.4.1/24'} )
         self.addLink(client3, router1, intfName2='r1-eth3', params2={ 'ip': '10.0.3.1/24'} )
         self.addLink(client4, router1, intfName2='r1-eth4', params2={ 'ip': '10.0.2.1/24'} )
-        
-
-
-        
-
-
+          
         defaultIP2 = '10.0.6.2/24' #IP pro roteador 2
         router2 = self.addNode( 'r2', cls=LinuxRouter, ip=defaultIP2, defaultRoute='via 10.0.6.1')
         self.addLink(router2, router1, intfName2='r1-eth5', params2={'ip':'10.0.6.1/24'})
@@ -82,7 +76,7 @@ def perfTest():
     "Test linux router"
     topo = MyTopo()
     net = Mininet( topo=topo )  # controller is used by s1-s3
-
+    net.addController(name='c0')
     net.start()
 
     info( '*** Routing Table on Router:\n' )
@@ -92,8 +86,32 @@ def perfTest():
     # net[ 'r1'].cmd('ip route add to 10.10.7.0/24 via 10.10.5.2')
     # net[ 'r1'].cmd('ip route add to 10.10.8.0/24 via 10.10.5.2')
     # net[ 'r1'].cmd('ip route add to 10.10.9.0/24 via 10.10.5.2')
-    print net[ 'r1' ].cmd( 'route' )
-    print net[ 'r2' ].cmd( 'route' )
+    #print net[ 'r1' ].cmd( 'route' )
+    #print net[ 'r2' ].cmd( 'route' )
+    IpsClient = []
+    IpsClient.append('10.0.5.10')
+    IpsClient.append('10.0.4.10')
+    IpsClient.append('10.0.3.10')
+    IpsClient.append('10.0.2.10') 
+    count = 0
+
+    for i in ('h1', 'h2', 'h3', 'h4'):
+      	net[i].cmdPrint('iperf -s -Z reno > '+i+'Reno.txt &')
+      	for j in ('server1', 'server2', 'server3', 'server4'):
+      		net[j].cmdPrint('iperf -c '+IpsClient[count]+' -Z reno')
+      	count+=1
+
+    for k in ('h1', 'h2', 'h3', 'h4'):
+      	#print("Ativando o tcp reno para " + k)
+     	net[k].cmdPrint('sudo /sbin/modprobe tcp_cubic')
+
+	count = 0
+    
+    for i in ('h1', 'h2', 'h3', 'h4'):
+      	net[i].cmdPrint('iperf -s -Z cubic > '+i+'Cubic.txt &')
+      	for j in ('server1', 'server2', 'server3', 'server4'):
+      		net[j].cmdPrint('iperf -c '+IpsClient[count]+' -Z cubic')
+      	count+=1
 
 
     CLI( net )
