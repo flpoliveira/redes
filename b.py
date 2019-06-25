@@ -76,7 +76,7 @@ def perfTest():
     "Test linux router"
     topo = MyTopo()
     net = Mininet( topo=topo )  # controller is used by s1-s3
-    net.addController(name='c0')
+    
     net.start()
 
     info( '*** Routing Table on Router:\n' )
